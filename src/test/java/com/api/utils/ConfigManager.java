@@ -7,7 +7,7 @@ import java.util.Properties;
 
 public class ConfigManager {
 	private static Properties prop = new Properties();
-	private static String path ="config/config.qa.properties";
+	private static String path ="config/config.properties";
 	private static String env;
 	static {
 		
@@ -40,7 +40,7 @@ public class ConfigManager {
 		}
 	}
 
-	public static String getProperty(String key) throws IOException {
+	public static String getProperty(String key)  {
 		// TODO Auto-generated method stub
 		System.out.println(System.getProperty("user.dir"));
 
