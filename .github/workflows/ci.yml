@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: Phoenix Test Automation Workflow
 
 on:
   push:
