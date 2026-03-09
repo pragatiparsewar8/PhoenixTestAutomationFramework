@@ -2,6 +2,10 @@ package com.api.tests;
 
 import static io.restassured.RestAssured.given;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
 
 import com.api.constants.Role;
@@ -10,11 +14,9 @@ import com.api.pojo.Customer;
 import com.api.pojo.CustomerAddress;
 import com.api.pojo.CustomerProduct;
 import com.api.pojo.Problems;
-import com.api.utils.AuthTokenProvider;
-import com.api.utils.ConfigManager;
 import com.api.utils.SpecUtil;
 
-import io.restassured.http.ContentType;
+import io.restassured.module.jsv.JsonSchemaValidator;
 
 public class CreateJobAPITest {
 
@@ -23,19 +25,23 @@ public class CreateJobAPITest {
 		
 		Customer customer = new Customer("Pragati", "parsewar", "9420425968", "", "pragati@gmail.com", "");
 		CustomerAddress customerAddress = new CustomerAddress("D404", "Vsanat Galaxy", "Bangur bangur", "inorvit", "Mumbai","413517","India", "Maharashtra");
-		CustomerProduct customerProduct = new CustomerProduct("2025-09-08T18:30:00.000Z", "290987367343280", "290987367343280", "290987367343280", "2025-09-08T18:30:00.000Z", 1, 1);
+		CustomerProduct customerProduct = new CustomerProduct("2025-09-08T18:30:00.000Z", "290987367343284", "290987367343284", "290987367343284", "2025-09-08T18:30:00.000Z", 1, 1);
 		Problems problem = new Problems(1,"BatteryIssue");
-		Problems[] problemsArray = new Problems[1];
-		problemsArray[0] = problem;
+		List<Problems> problemsList = new ArrayList<Problems>();
+		problemsList.add(problem);
 		
-		CreateJobPayload createJobPayload = new CreateJobPayload(0, 2, 1, 1, customer, customerAddress, customerProduct, problemsArray);
+		CreateJobPayload createJobPayload = new CreateJobPayload(0, 2, 1, 1, customer, customerAddress, customerProduct, problemsList);
 		
 		given()
 		.spec(SpecUtil.requestSpecWithAuth(Role.FD, createJobPayload))
 		.when()
 		.post("/job/create")
 		.then()
-		.spec(SpecUtil.responseSpec_OK());
+		.spec(SpecUtil.responseSpec_OK())
+		.body(JsonSchemaValidator.matchesJsonSchemaInClasspath("response-schema/CreateJobAPIResponseSchema.json"))
+		.body("message", Matchers.equalTo("Job created successfully. "))
+		.body("data.mst_service_location_id",Matchers.equalTo(1))
+		.body("data.job_number",Matchers.startsWith("JOB_"));
 		
 		
 		
