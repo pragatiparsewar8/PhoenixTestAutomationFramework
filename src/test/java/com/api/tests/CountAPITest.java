@@ -1,31 +1,34 @@
 package com.api.tests;
 
+import static com.api.constants.Role.FD;
+import static com.api.utils.SpecUtil.requestSpec;
+import static com.api.utils.SpecUtil.requestSpecWithAuth;
+import static com.api.utils.SpecUtil.responseSpec_OK;
+import static com.api.utils.SpecUtil.responseSpec_TEXT;
 import static io.restassured.RestAssured.given;
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
+import static org.hamcrest.Matchers.blankOrNullString;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.everyItem;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
 
 import java.io.IOException;
 
-import static org.hamcrest.Matchers.*;
-
 import org.testng.annotations.Test;
-
-import com.api.utils.SpecUtil;
-
-import static com.api.constants.Role.*;
-import static com.api.utils.AuthTokenProvider.*;
-import static com.api.utils.ConfigManager.*;
-
-import static io.restassured.module.jsv.JsonSchemaValidator.*;
 
 public class CountAPITest {
 
-	@Test
+	@Test(description="Verify if count api is working correctly",groups= {"api","smoke","regression"})
 	public void verifyCountAPIResponse() {
 		given()
-		.spec(SpecUtil.requestSpecWithAuth(FD))
+		.spec(requestSpecWithAuth(FD))
 		.when()
 				.get("/dashboard/count")
 				.then()
-				.spec(SpecUtil.responseSpec_OK())
+				.spec(responseSpec_OK())
 				.body("message", equalTo("Success"))
 				.body("data", notNullValue()).body("data.size()", equalTo(3))
 				.body("data.count", everyItem(greaterThanOrEqualTo(0)))
@@ -35,12 +38,12 @@ public class CountAPITest {
 				.body(matchesJsonSchemaInClasspath("response-schema/CountAPIResponseSchema-FD.json"));
 	}
 
-	@Test
+	@Test(description="Verify if count api is giving correct status for invalid token",groups= {"api","smoke","regression","negative"})
 	public void countApiTest_MissingAuthToken() throws IOException {
 		given()
-		.spec(SpecUtil.requestSpec())
+		.spec(requestSpec())
 		.when().get("/dashboard/count")
 		.then()
-		.spec(SpecUtil.responseSpec_TEXT(401));
+		.spec(responseSpec_TEXT(401));
 	}
 }

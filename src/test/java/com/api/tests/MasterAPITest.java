@@ -10,20 +10,20 @@ import static org.hamcrest.Matchers.*;
 
 import org.testng.annotations.Test;
 
-import com.api.utils.SpecUtil;
+import static com.api.utils.SpecUtil.*;
 
-import io.restassured.module.jsv.JsonSchemaValidator;
+import static io.restassured.module.jsv.JsonSchemaValidator.*;
 
 public class MasterAPITest {
 	
-	@Test
+	@Test(description="Verify if Master api is working correctly",groups= {"api","smoke","regression"})
 	public void masterAPITest() {
 		given()
-		.spec(SpecUtil.requestSpecWithAuth(FD))
+		.spec(requestSpecWithAuth(FD))
 		.when()
 		.post("master")
 		.then() 
-		.spec(SpecUtil.responseSpec_OK())
+		.spec(responseSpec_OK())
 		.body("message", equalTo("Success"))
 		.and()
 		.body("data",notNullValue())
@@ -31,18 +31,18 @@ public class MasterAPITest {
 		.body("$", hasKey("data"))
 		.body("data.mst_oem.size()", greaterThan(0))
 		.body("data.mst_oem.id",everyItem(notNullValue()))
-		.body(JsonSchemaValidator.matchesJsonSchemaInClasspath("response-schema/MasterAPIResponseSchema.json"));
+		.body(matchesJsonSchemaInClasspath("response-schema/MasterAPIResponseSchema.json"));
 		
 	}
 	
-	@Test
+	@Test(description="Verify if Master api is giving correct status for invalid token",groups= {"api","smoke","regression","negative"})
 	public void invalidTokenMasterAPIRequest() {
 		given()
-		.spec(SpecUtil.requestSpec())
+		.spec(requestSpec())
 		.log().all()
 		.when()
 		.post("master")
 		.then() 
-		.spec(SpecUtil.responseSpec_TEXT(401));
+		.spec(responseSpec_TEXT(401));
 	}
 }

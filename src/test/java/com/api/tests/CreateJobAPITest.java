@@ -1,11 +1,15 @@
 package com.api.tests;
 
+import static com.api.utils.DateTimeUtil.getTimeWithDaysAgo;
+import static com.api.utils.SpecUtil.requestSpecWithAuth;
+import static com.api.utils.SpecUtil.responseSpec_OK;
 import static io.restassured.RestAssured.given;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.hamcrest.Matchers;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.api.constants.Model;
@@ -21,16 +25,15 @@ import com.api.request.model.Customer;
 import com.api.request.model.CustomerAddress;
 import com.api.request.model.CustomerProduct;
 import com.api.request.model.Problems;
-import static com.api.utils.DateTimeUtil.*;
-import com.api.utils.SpecUtil;
 
 import io.restassured.module.jsv.JsonSchemaValidator;
 
 public class CreateJobAPITest {
-
-	@Test
-	public void createJobAPITest() {
-		
+	
+	private CreateJobPayload createJobPayload;
+	
+	@BeforeMethod(description="Creating payload for creat job api")
+	public void setUp() {
 		Customer customer = new Customer("Pragati", "parsewar", "9420425968", "", "pragati@gmail.com", "");
 		CustomerAddress customerAddress = new CustomerAddress("D404", "Vsanat Galaxy", "Bangur bangur", "inorvit", "Mumbai","413517","India", "Maharashtra");
 		CustomerProduct customerProduct = new CustomerProduct(getTimeWithDaysAgo(10), "190887367343284", "190887367343284", "190887367343284", getTimeWithDaysAgo(10), Product.NEXUS_2.getCode(), Model.NEXUS_2_BLUE.getCode());
@@ -38,14 +41,20 @@ public class CreateJobAPITest {
 		List<Problems> problemsList = new ArrayList<Problems>();
 		problemsList.add(problem);
 		
-		CreateJobPayload createJobPayload = new CreateJobPayload(Service_Location.SERVICE_LOCATION_A.getCode(), Platform.FRONT_DESK.getCode(), Warranty_Status.IN_WARRANTY.getCode(), OEM.GOOGLE.getCode(), customer, customerAddress, customerProduct, problemsList);
+		 createJobPayload = new CreateJobPayload(Service_Location.SERVICE_LOCATION_A.getCode(), Platform.FRONT_DESK.getCode(), Warranty_Status.IN_WARRANTY.getCode(), OEM.GOOGLE.getCode(), customer, customerAddress, customerProduct, problemsList);
+		
+	}
+
+	@Test(description="Verify if create job api is able to create Inwarranty job",groups= {"api","smoke","regression"})
+	public void createJobAPITest() {
+		
 		
 		given()
-		.spec(SpecUtil.requestSpecWithAuth(Role.FD, createJobPayload))
+		.spec(requestSpecWithAuth(Role.FD, createJobPayload))
 		.when()
 		.post("/job/create")
 		.then()
-		.spec(SpecUtil.responseSpec_OK())
+		.spec(responseSpec_OK())
 		.body(JsonSchemaValidator.matchesJsonSchemaInClasspath("response-schema/CreateJobAPIResponseSchema.json"))
 		.body("message", Matchers.equalTo("Job created successfully. "))
 		.body("data.mst_service_location_id",Matchers.equalTo(1))
