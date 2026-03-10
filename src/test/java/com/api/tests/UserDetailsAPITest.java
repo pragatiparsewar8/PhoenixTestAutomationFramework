@@ -1,37 +1,22 @@
 package com.api.tests;
 
-import static com.api.utils.ConfigManager.getProperty;
+import static com.api.constants.Role.FD;
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.lessThan;
-
-import java.io.IOException;
 
 import org.testng.annotations.Test;
 
-import com.api.utils.SpecUtil;
+import static com.api.utils.SpecUtil.*;
 
-import static com.api.constants.Role.*;
-
-import static com.api.utils.AuthTokenProvider.*;
-
-import io.restassured.http.ContentType;
-import io.restassured.http.Header;
-import io.restassured.module.jsv.JsonSchemaValidator;
+import static io.restassured.module.jsv.JsonSchemaValidator.*;
 
 public class UserDetailsAPITest {
-	
-	@Test
-	public void userDetailsApiTest()  {
-		
-		
-		given()
-			.spec(SpecUtil.requestSpecWithAuth(FD))
-		.when()
-			.get("userDetails")
-		.then()
-			.spec(SpecUtil.responseSpec_OK())
-			.body(JsonSchemaValidator.matchesJsonSchemaInClasspath("response-schema/UserDetailsResponseSchema.json"));
-			
-			
+
+	@Test(description = "Verify if user details api response is shown correctly", groups = { "api", "smoke",
+			"regression" })
+	public void userDetailsApiTest() {
+
+		given().spec(requestSpecWithAuth(FD)).when().get("userDetails").then().spec(responseSpec_OK())
+				.body(matchesJsonSchemaInClasspath("response-schema/UserDetailsResponseSchema.json"));
+
 	}
 }
