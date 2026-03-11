@@ -21,13 +21,13 @@ public class ReadCSVFile_MapToPOJO {
 		CSVReader csvReader = new CSVReader(isr);
 		
 		
-		CsvToBean<UserPOJO> csvToBean = new CsvToBeanBuilder(csvReader)
-				.withType(UserPOJO.class)
+		CsvToBean<UserBean> csvToBean = new CsvToBeanBuilder(csvReader)
+				.withType(UserBean.class)
 				.withIgnoreEmptyLine(true)
 				.build();
 		
 		
-		List<UserPOJO> userList = csvToBean.parse();
+		List<UserBean> userList = csvToBean.parse();
 		
 		System.out.println(userList);
 		
