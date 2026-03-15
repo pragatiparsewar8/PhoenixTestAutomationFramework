@@ -17,25 +17,25 @@ public class CSVReaderUtil {
 		
 	}
 	
-	public static Iterator<UserBean> loadCSV(String pathOfCSVFile) {
+	public static <T> Iterator<T> loadCSV(String pathOfCSVFile,Class<T> bean) {
 		// TODO Auto-generated method stub
 		
-		InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream("testData/loginCreds.csv");
+		InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream(pathOfCSVFile);
 		
 		InputStreamReader isr = new InputStreamReader(input);
 		CSVReader csvReader = new CSVReader(isr);
 		
 		
-		CsvToBean<UserBean> csvToBean = new CsvToBeanBuilder(csvReader)
-				.withType(UserBean.class)
+		CsvToBean<T> csvToBean = new CsvToBeanBuilder(csvReader)
+				.withType(bean)
 				.withIgnoreEmptyLine(true)
 				.build();
 		
 		
-		List<UserBean> userList = csvToBean.parse();
+		List<T> list = csvToBean.parse();
 		
-		System.out.println(userList);
-		return userList.iterator();
+		
+		return list.iterator();
 		
 	}
 
