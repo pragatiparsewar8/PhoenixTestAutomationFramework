@@ -1,0 +1,119 @@
+[
+{
+    "mst_service_location_id": 0,
+    "mst_platform_id": 2,
+    "mst_warrenty_status_id": 1,
+    "mst_oem_id": 1,
+    "customer": {
+        "first_name": "Robbie",
+        "last_name": "Jacobi",
+        "mobile_number": "866-829-1551",
+        "mobile_number_alt": "",
+        "email_id": "Lonnie84@hotmail.com",
+        "email_id_alt": "pragatiparsewar@gmail.com"
+    },
+    "customer_address": {
+        "flat_number": "906",
+        "apartment_name": "rohan",
+        "street_name": "sakhre vasti",
+        "landmark": "hinjewadi",
+        "area": "pune",
+        "pincode": "411568",
+        "country": "India",
+        "state": "Maharashtra"
+    },
+    "customer_product": {
+        "dop": "2025-09-08T18:30:00.000Z",
+        "serial_number": "714465284011352",
+        "imei1": "714465284011352",
+        "imei2": "714465284011352",
+        "popurl": "2025-09-08T18:30:00.000Z",
+        "product_id": 1,
+        "mst_model_id": 1
+    },
+    "problems": [
+        {
+            "id": 1,
+            "remark": "phone lags"
+        }
+    ]
+},
+{
+    "mst_service_location_id": 0,
+    "mst_platform_id": 2,
+    "mst_warrenty_status_id": 1,
+    "mst_oem_id": 1,
+    "customer": {
+        "first_name": "Robbie",
+        "last_name": "Jacobi",
+        "mobile_number": "866-829-1551",
+        "mobile_number_alt": "",
+        "email_id": "Lonnie84@hotmail.com",
+        "email_id_alt": "pragatiparsewar@gmail.com"
+    },
+    "customer_address": {
+        "flat_number": "906",
+        "apartment_name": "rohan",
+        "street_name": "sakhre vasti",
+        "landmark": "hinjewadi",
+        "area": "pune",
+        "pincode": "411568",
+        "country": "India",
+        "state": "Maharashtra"
+    },
+    "customer_product": {
+        "dop": "2025-09-08T18:30:00.000Z",
+        "serial_number": "914465284011352",
+        "imei1": "914465284011352",
+        "imei2": "914465284011352",
+        "popurl": "2025-09-08T18:30:00.000Z",
+        "product_id": 1,
+        "mst_model_id": 1
+    },
+    "problems": [
+        {
+            "id": 1,
+            "remark": "phone lags"
+        }
+    ]
+},
+{
+    "mst_service_location_id": 0,
+    "mst_platform_id": 2,
+    "mst_warrenty_status_id": 1,
+    "mst_oem_id": 1,
+    "customer": {
+        "first_name": "Robbie",
+        "last_name": "Jacobi",
+        "mobile_number": "866-829-1551",
+        "mobile_number_alt": "",
+        "email_id": "Lonnie84@hotmail.com",
+        "email_id_alt": "pragatiparsewar@gmail.com"
+    },
+    "customer_address": {
+        "flat_number": "906",
+        "apartment_name": "rohan",
+        "street_name": "sakhre vasti",
+        "landmark": "hinjewadi",
+        "area": "pune",
+        "pincode": "411568",
+        "country": "India",
+        "state": "Maharashtra"
+    },
+    "customer_product": {
+        "dop": "2025-09-08T18:30:00.000Z",
+        "serial_number": "814465284011352",
+        "imei1": "814465284011352",
+        "imei2": "814465284011352",
+        "popurl": "2025-09-08T18:30:00.000Z",
+        "product_id": 1,
+        "mst_model_id": 1
+    },
+    "problems": [
+        {
+            "id": 1,
+            "remark": "phone lags"
+        }
+    ]
+}
+]
