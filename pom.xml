@@ -68,7 +68,16 @@
 			<artifactId>javafaker</artifactId>
 			<version>1.0.2</version> <!-- Use the latest version available -->
 		</dependency>
-
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>5.5.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.ozlerhakan</groupId>
+			<artifactId>poiji</artifactId>
+			<version>5.2.0</version>
+		</dependency>
 
 	</dependencies>
 </project>
