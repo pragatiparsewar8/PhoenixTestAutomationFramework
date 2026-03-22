@@ -18,11 +18,11 @@ public class ExcelReaderUtil2 {
 
 	}
 
-	public static <T> Iterator<T> loadTestData(String sheetName,Class<T> clazz) {
+	public static <T> Iterator<T> loadTestData(String xlsxFile,String sheetName,Class<T> clazz) {
 		// TODO Auto-generated method stub
 
 		InputStream is = Thread.currentThread().getContextClassLoader()
-				.getResourceAsStream("testData/PhoenixTestData.xlsx");
+				.getResourceAsStream(xlsxFile);
 
 		XSSFWorkbook myWorkBook = null;
 		try {
