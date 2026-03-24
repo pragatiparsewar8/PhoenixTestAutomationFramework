@@ -42,7 +42,7 @@ public class ConfigManager {
 
 	public static String getProperty(String key)  {
 		// TODO Auto-generated method stub
-		System.out.println(System.getProperty("user.dir"));
+//		System.out.println(System.getProperty("user.dir"));
 
 		return prop.getProperty(key);
 
