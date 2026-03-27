@@ -39,7 +39,7 @@ import com.database.model.MapJobProblemModel;
 import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.response.Response;
 
-public class CreateJobAPITestWithDBValidationTest2 {
+public class CreateJobAPITestWithDBValidationWithResponseModelTest {
 	
 	private CreateJobPayload createJobPayload;
 	private Customer customer;
