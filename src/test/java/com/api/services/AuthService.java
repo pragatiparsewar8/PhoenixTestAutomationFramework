@@ -16,7 +16,7 @@ public class AuthService {
 	private static final Logger LOGGER = LogManager.getLogger(AuthService.class);
 	public Response login(Object userCredentials) {
 //		
-		LOGGER.info("Making login request for the payload {}",((UserBean)userCredentials).getUsername());
+		LOGGER.info("Making login request for the payload {}",userCredentials);
 		Response response = given()
 		.spec(SpecUtil
 		.requestSpec(userCredentials))

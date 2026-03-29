@@ -6,10 +6,14 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.database.DatabaseManager;
 import com.dataproviders.api.bean.CreateJobBean;
 
 public class CreateJobPayloadDao {
+	private static final Logger LOGGER = LogManager.getLogger(CreateJobPayloadDao.class);
 
 	private static final String SQL_QUERY =
 			"""
@@ -68,9 +72,12 @@ public class CreateJobPayloadDao {
 		
 		
 		try {
+			LOGGER.info("Getting the connection from the Database Manager");
 			conn = DatabaseManager.getConnection();
 			statement = conn.createStatement();
 			resultSet = statement.executeQuery(SQL_QUERY);
+			LOGGER.info("Executing the SQL Query {}", SQL_QUERY);
+
 			while(resultSet.next()) {
 				CreateJobBean bean = new CreateJobBean();
 				bean.setMst_service_location_id(resultSet.getString("mst_service_location_id"));
@@ -103,6 +110,8 @@ public class CreateJobPayloadDao {
 				beanList.add(bean);
 			}
 		}catch(Exception e) {
+			LOGGER.error("Cannot convert the result set to the bean", e);
+
 			e.printStackTrace();
 		}
 		for(CreateJobBean bean : beanList) {
