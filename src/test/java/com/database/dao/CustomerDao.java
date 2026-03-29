@@ -26,7 +26,7 @@ public class CustomerDao {
 		Connection conn = DatabaseManager.getConnection();
 		PreparedStatement preparedStatement = conn.prepareStatement(CUSTOMER_DETAILS_QUERY);
 		preparedStatement.setInt(1, customerId);
-		LOGGER.info("Executing the SQL Query",CUSTOMER_DETAIL_QUERY );
+		LOGGER.info("Executing the SQL Query",CUSTOMER_DETAILS_QUERY );
 
 		ResultSet resultset = preparedStatement.executeQuery();
 		

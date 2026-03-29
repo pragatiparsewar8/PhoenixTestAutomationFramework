@@ -15,7 +15,7 @@ public class JsonReaderUtil {
 	
 	private static final Logger LOGGER = LogManager.getLogger(JsonReaderUtil.class);
 	public static <T> Iterator<T> loadJson(String filename,Class<T[]> clazz)  {
-		LOGGER.info("Reading the JSON from the file {}", fileName);
+		LOGGER.info("Reading the JSON from the file {}", filename);
 		InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream(filename);
 
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -29,7 +29,7 @@ public class JsonReaderUtil {
 			classArray = objectMapper.readValue(input, clazz);
 			list = Arrays.asList(classArray);
 		} catch (IOException e) {
-			LOGGER.error("Cannot read the json from the file {}", fileName,e);
+			LOGGER.error("Cannot read the json from the file {}", filename,e);
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
