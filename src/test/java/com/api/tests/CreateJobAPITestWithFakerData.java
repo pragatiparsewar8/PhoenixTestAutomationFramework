@@ -12,6 +12,7 @@ import org.testng.annotations.Test;
 import com.api.constants.Role;
 import com.api.request.model.CreateJobPayload;
 import com.api.request.model.Customer;
+import com.api.services.JobService;
 import com.api.utils.FakerDataGenerator;
 import com.database.dao.CustomerAddressDao;
 import com.database.dao.CustomerDao;
@@ -23,20 +24,21 @@ import io.restassured.module.jsv.JsonSchemaValidator;
 public class CreateJobAPITestWithFakerData {
 
 	private CreateJobPayload createJobPayload;
+	private JobService jobService;
 	public static final String COUNTRY = "INDIA";
 
 	@BeforeMethod(description = "Creating payload for creat job api")
 	public void setUp() {
 
 		createJobPayload = FakerDataGenerator.generateFakeCreateJobData();
-
+		 jobService = new JobService();
 	}
 
 	@Test(description = "Verify if create job api is able to create Inwarranty job", groups = { "api", "smoke",
 			"regression" })
 	public void createJobAPITest() {
 
-		int customerId = given().spec(requestSpecWithAuth(Role.FD, createJobPayload)).when().post("/job/create").then()
+		int customerId = jobService.createJob(Role.FD, createJobPayload).then()
 				.spec(responseSpec_OK())
 				.body(JsonSchemaValidator
 						.matchesJsonSchemaInClasspath("response-schema/CreateJobAPIResponseSchema.json"))

@@ -25,12 +25,14 @@ import com.api.request.model.Customer;
 import com.api.request.model.CustomerAddress;
 import com.api.request.model.CustomerProduct;
 import com.api.request.model.Problems;
+import com.api.services.JobService;
 
 import io.restassured.module.jsv.JsonSchemaValidator;
 
 public class CreateJobAPITest {
 	
 	private CreateJobPayload createJobPayload;
+	private JobService jobService;
 	
 	@BeforeMethod(description="Creating payload for creat job api")
 	public void setUp() {
@@ -42,17 +44,14 @@ public class CreateJobAPITest {
 		problemsList.add(problem);
 		
 		 createJobPayload = new CreateJobPayload(Service_Location.SERVICE_LOCATION_A.getCode(), Platform.FRONT_DESK.getCode(), Warranty_Status.IN_WARRANTY.getCode(), OEM.GOOGLE.getCode(), customer, customerAddress, customerProduct, problemsList);
-		
+		 jobService = new JobService();
 	}
 
 	@Test(description="Verify if create job api is able to create Inwarranty job",groups= {"api","smoke","regression"})
 	public void createJobAPITest() {
 		
 		
-		given()
-		.spec(requestSpecWithAuth(Role.FD, createJobPayload))
-		.when()
-		.post("/job/create")
+		jobService.createJob(Role.FD, createJobPayload)
 		.then()
 		.spec(responseSpec_OK())
 		.body(JsonSchemaValidator.matchesJsonSchemaInClasspath("response-schema/CreateJobAPIResponseSchema.json"))

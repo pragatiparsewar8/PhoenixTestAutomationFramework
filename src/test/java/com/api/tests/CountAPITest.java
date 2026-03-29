@@ -1,8 +1,6 @@
 package com.api.tests;
 
-import static com.api.constants.Role.FD;
 import static com.api.utils.SpecUtil.requestSpec;
-import static com.api.utils.SpecUtil.requestSpecWithAuth;
 import static com.api.utils.SpecUtil.responseSpec_OK;
 import static com.api.utils.SpecUtil.responseSpec_TEXT;
 import static io.restassured.RestAssured.given;
@@ -17,16 +15,30 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import java.io.IOException;
 
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import com.api.constants.Role;
+import com.api.services.DashboardService;
+import com.api.services.UserService;
 
 public class CountAPITest {
 
+	private	DashboardService dashboardService ;
+
+	
+	@BeforeMethod(description = "Initializing the Dashboard service")
+	public void setUp() {
+		dashboardService = new DashboardService();
+	}
+	
+	
+	
 	@Test(description="Verify if count api is working correctly",groups= {"api","smoke","regression"})
 	public void verifyCountAPIResponse() {
-		given()
-		.spec(requestSpecWithAuth(FD))
-		.when()
-				.get("/dashboard/count")
+		
+		
+		dashboardService.count(Role.FD)
 				.then()
 				.spec(responseSpec_OK())
 				.body("message", equalTo("Success"))
@@ -40,9 +52,7 @@ public class CountAPITest {
 
 	@Test(description="Verify if count api is giving correct status for invalid token",groups= {"api","smoke","regression","negative"})
 	public void countApiTest_MissingAuthToken() throws IOException {
-		given()
-		.spec(requestSpec())
-		.when().get("/dashboard/count")
+		dashboardService.count()
 		.then()
 		.spec(responseSpec_TEXT(401));
 	}
