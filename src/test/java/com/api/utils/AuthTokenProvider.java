@@ -6,7 +6,8 @@ import static com.api.constants.Role.QC;
 import static com.api.constants.Role.SUP;
 import static io.restassured.RestAssured.given;
 
-import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.hamcrest.Matchers;
 
@@ -16,6 +17,8 @@ import com.api.request.model.UserCredentials;
 import io.restassured.http.ContentType;
 
 public class AuthTokenProvider {
+	
+	private static Map<Role,String> tokenCache = new ConcurrentHashMap<Role,String>();
 
 	private AuthTokenProvider() {
 
@@ -23,6 +26,11 @@ public class AuthTokenProvider {
 
 	public static String getToken(Role role)  {
 		// TODO Auto-generated method stub
+		
+		
+		if(tokenCache.containsKey(role)) {
+			return tokenCache.get(role);
+		}
 		
 		UserCredentials userCredentials = null;
 		if(role == FD) {
@@ -43,6 +51,7 @@ public class AuthTokenProvider {
 				.statusCode(200).body("message", Matchers.equalTo("Success")).extract().jsonPath()
 				.getString("data.token");
 
+		tokenCache.put(role, token);
 		return token;
 	}
 
