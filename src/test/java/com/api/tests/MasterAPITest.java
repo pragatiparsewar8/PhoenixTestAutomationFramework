@@ -1,27 +1,33 @@
 package com.api.tests;
 
-import static com.api.constants.Role.*;
-import static com.api.utils.AuthTokenProvider.*;
-import static com.api.utils.ConfigManager.*;
-import static io.restassured.RestAssured.*;
+import static com.api.constants.Role.FD;
+import static com.api.utils.SpecUtil.requestSpec;
+import static com.api.utils.SpecUtil.requestSpecWithAuth;
+import static com.api.utils.SpecUtil.responseSpec_OK;
+import static com.api.utils.SpecUtil.responseSpec_TEXT;
+import static io.restassured.RestAssured.given;
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.everyItem;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.notNullValue;
 
-import static org.hamcrest.Matchers.*;
-
-
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static com.api.utils.SpecUtil.*;
-
-import static io.restassured.module.jsv.JsonSchemaValidator.*;
+import com.api.services.MasterService;
 
 public class MasterAPITest {
-	
+	private MasterService masterService;
+
+	@BeforeMethod(description = "Instantiating the Master Service Object")
+	public void setup() {
+		masterService = new MasterService();
+	}
 	@Test(description="Verify if Master api is working correctly",groups= {"api","smoke","regression"})
 	public void masterAPITest() {
-		given()
-		.spec(requestSpecWithAuth(FD))
-		.when()
-		.post("master")
+		masterService.master(FD)
 		.then() 
 		.spec(responseSpec_OK())
 		.body("message", equalTo("Success"))
