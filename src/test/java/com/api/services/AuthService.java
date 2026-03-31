@@ -2,18 +2,24 @@ package com.api.services;
 
 import static io.restassured.RestAssured.given;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.api.utils.SpecUtil;
+import com.dataproviders.api.bean.UserBean;
 
 import io.restassured.response.Response;
 
 public class AuthService {
 	
 	private static final String LOGIN_ENDPOINT = "login";
-	public Response login(Object payload) {
-		
+	private static final Logger LOGGER = LogManager.getLogger(AuthService.class);
+	public Response login(Object userCredentials) {
+//		
+		LOGGER.info("Making login request for the payload {}",userCredentials);
 		Response response = given()
 		.spec(SpecUtil
-		.requestSpec(payload))
+		.requestSpec(userCredentials))
 		.when().post(LOGIN_ENDPOINT);
 		
 		return response;

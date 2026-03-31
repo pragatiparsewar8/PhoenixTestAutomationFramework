@@ -52,7 +52,7 @@ public class CountAPITest {
 
 	@Test(description="Verify if count api is giving correct status for invalid token",groups= {"api","smoke","regression","negative"})
 	public void countApiTest_MissingAuthToken() throws IOException {
-		dashboardService.count()
+		dashboardService.countWithNoAuth()
 		.then()
 		.spec(responseSpec_TEXT(401));
 	}
