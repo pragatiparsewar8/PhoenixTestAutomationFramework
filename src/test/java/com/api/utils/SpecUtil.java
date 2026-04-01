@@ -4,7 +4,7 @@ import static com.api.utils.ConfigManager.getProperty;
 import static org.hamcrest.Matchers.lessThan;
 
 import com.api.constants.Role;
-import com.api.request.model.UserCredentials;
+import com.api.filters.SensitiveDataFilter;
 
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
@@ -34,6 +34,7 @@ public class SpecUtil {
 				.setAccept(ContentType.JSON)
 				.setContentType(ContentType.JSON)
 				.setBody(payload)
+				.addFilter(new SensitiveDataFilter())
 				.log(LogDetail.URI)
 				.log(LogDetail.HEADERS)
 				.log(LogDetail.METHOD)
