@@ -7,6 +7,7 @@ import static io.restassured.RestAssured.given;
 import org.hamcrest.Matchers;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import com.api.constants.Role;
@@ -20,7 +21,7 @@ import com.database.model.CustomerAddressDBModel;
 import com.database.model.CustomerDBModel;
 
 import io.restassured.module.jsv.JsonSchemaValidator;
-
+@Listeners(com.listeners.APITestListeners.class)
 public class CreateJobAPITestWithFakerData {
 
 	private CreateJobPayload createJobPayload;
