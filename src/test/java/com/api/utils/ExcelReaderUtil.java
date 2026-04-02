@@ -12,6 +12,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.poiji.bind.Poiji;
 
+import io.qameta.allure.Step;
+
 public class ExcelReaderUtil {
 	private static final Logger LOGGER = LogManager.getLogger(ExcelReaderUtil.class);
 
@@ -19,28 +21,28 @@ public class ExcelReaderUtil {
 
 	}
 
-	public static <T> Iterator<T> loadTestData(String xlsxFile,String sheetName,Class<T> clazz) {
+	@Step("Loading test data from the excel file")
+	public static <T> Iterator<T> loadTestData(String xlsxFile, String sheetName, Class<T> clazz) {
 		// TODO Auto-generated method stub
-		LOGGER.info("Reading the test data from .xlsx file {} and the sheet name is {}", xlsxFile,sheetName);
-		
-		InputStream is = Thread.currentThread().getContextClassLoader()
-				.getResourceAsStream(xlsxFile);
+		LOGGER.info("Reading the test data from .xlsx file {} and the sheet name is {}", xlsxFile, sheetName);
+
+		InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(xlsxFile);
 
 		XSSFWorkbook myWorkBook = null;
 		try {
 			myWorkBook = new XSSFWorkbook(is);
 		} catch (IOException e) {
-			LOGGER.error("Cannot read the excel {}",xlsxFile,e);
+			LOGGER.error("Cannot read the excel {}", xlsxFile, e);
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		XSSFSheet mySheet = myWorkBook.getSheet(sheetName);
-		LOGGER.info("Converting the XSSFSheet {} to POJO Class of type {}", sheetName,clazz);
+		LOGGER.info("Converting the XSSFSheet {} to POJO Class of type {}", sheetName, clazz);
 		List<T> dataList = Poiji.fromExcel(mySheet, clazz);
-		
+
 		return dataList.iterator();
-		
+
 	}
 
 }

@@ -11,11 +11,13 @@ import com.api.utils.EnvUtil;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import io.qameta.allure.Step;
+
 public class DatabaseManager {
 	private static final Logger LOGGER = LogManager.getLogger(DatabaseManager.class);
 
 	private static final String DB_URL = EnvUtil.getValue("DB_URL");
-	private static final String DB_USERNAME =EnvUtil.getValue("DB_USERNAME");
+	private static final String DB_USERNAME = EnvUtil.getValue("DB_USERNAME");
 	private static final String DB_PASSWORD = EnvUtil.getValue("DB_PASSWORD");
 	private static final int CONNECTION_TIMEOUT = Integer.parseInt(ConfigManager.getProperty("CONNECTION_TIMEOUT"));
 	private static final int MAXIMUM_POOLSIZE = Integer.parseInt(ConfigManager.getProperty("MAXIMUM_POOLSIZE"));
@@ -23,7 +25,7 @@ public class DatabaseManager {
 	private static final int MINIMUM_IDLE = Integer.parseInt(ConfigManager.getProperty("MINIMUM_IDLE"));
 	private static final int MAXLIFE_TIMEOUT = Integer.parseInt(ConfigManager.getProperty("MAXLIFE_TIMEOUT"));
 	private static final String POOL_NAME = ConfigManager.getProperty("POOL_NAME");
-	
+
 	private volatile static Connection conn;
 	private static HikariConfig hikariConfig;
 	private volatile static HikariDataSource hikariDataSource;
@@ -32,6 +34,7 @@ public class DatabaseManager {
 
 	}
 
+	@Step("Intializing the Database  Connection Pool")
 	private synchronized static void initializePool() {
 
 		if (conn == null) {
@@ -48,7 +51,7 @@ public class DatabaseManager {
 					hikariConfig.setMinimumIdle(MINIMUM_IDLE);
 					hikariConfig.setMaxLifetime(MAXLIFE_TIMEOUT);
 					hikariConfig.setPoolName(POOL_NAME);
-					
+
 					hikariDataSource = new HikariDataSource(hikariConfig);
 					LOGGER.info("Hikari Datasource created!!!");
 
@@ -56,23 +59,23 @@ public class DatabaseManager {
 			}
 		}
 	}
-	
+
+	@Step("Getting the Database Connection")
 	public static Connection getConnection() throws SQLException {
 		Connection connection = null;
-		
-		if(hikariDataSource == null) {
+
+		if (hikariDataSource == null) {
 			LOGGER.info("Intializing the DataBase Connection using HikariCP");
 
 			initializePool();
-		}
-		else if(hikariDataSource.isClosed()) {
+		} else if (hikariDataSource.isClosed()) {
 			LOGGER.error("HIKARI DATA SOURCE IS CLOSED");
 
 			throw new SQLException("Hikari data source is closed");
 		}
-		
-			 connection = hikariDataSource.getConnection();
-		
+
+		connection = hikariDataSource.getConnection();
+
 		return connection;
 	}
 }

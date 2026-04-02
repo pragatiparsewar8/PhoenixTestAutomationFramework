@@ -10,10 +10,12 @@ import org.apache.logging.log4j.Logger;
 import com.database.DatabaseManager;
 import com.database.model.CustomerAddressDBModel;
 
+import io.qameta.allure.Step;
+
 public class CustomerAddressDao {
 	private static final Logger LOGGER = LogManager.getLogger(CustomerAddressDao.class);
 
-	private static final String CUSTOMER_ADDRESS_QUERY ="""
+	private static final String CUSTOMER_ADDRESS_QUERY = """
 			Select
 					id,
 					flat_number,
@@ -27,33 +29,35 @@ public class CustomerAddressDao {
 			from tr_customer_address
 			where id = ?
 			""";
-	
+
 	private CustomerAddressDao() {
-		
+
 	}
+
+	@Step("Retriving the Customer Address Data from DB for the specific customer address id")
 	public static CustomerAddressDBModel getCustomerAddress(int customerAddressId) {
-		CustomerAddressDBModel customerAddressDBModel =null;
+		CustomerAddressDBModel customerAddressDBModel = null;
 		try {
 			LOGGER.info("Getting the connection from the Database Manager");
 
-		Connection conn = DatabaseManager.getConnection();
-		LOGGER.info("Executing the SQL Query {}",CUSTOMER_ADDRESS_QUERY );
+			Connection conn = DatabaseManager.getConnection();
+			LOGGER.info("Executing the SQL Query {}", CUSTOMER_ADDRESS_QUERY);
 
-		PreparedStatement prepareStatement = conn.prepareStatement(CUSTOMER_ADDRESS_QUERY);
-		prepareStatement.setInt(1, customerAddressId);
-		ResultSet rs = prepareStatement.executeQuery();
-		
-		while(rs.next()) {
-			 customerAddressDBModel = new CustomerAddressDBModel(rs.getInt("id"), rs.getString("flat_number"), rs.getString("apartment_name"),
-							rs.getString("street_name"), rs.getString("landmark"), rs.getString("area"),
-							rs.getString("pincode"), rs.getString("country"), rs.getString("state"));
-		}
-		}catch(Exception e) {
+			PreparedStatement prepareStatement = conn.prepareStatement(CUSTOMER_ADDRESS_QUERY);
+			prepareStatement.setInt(1, customerAddressId);
+			ResultSet rs = prepareStatement.executeQuery();
+
+			while (rs.next()) {
+				customerAddressDBModel = new CustomerAddressDBModel(rs.getInt("id"), rs.getString("flat_number"),
+						rs.getString("apartment_name"), rs.getString("street_name"), rs.getString("landmark"),
+						rs.getString("area"), rs.getString("pincode"), rs.getString("country"), rs.getString("state"));
+			}
+		} catch (Exception e) {
 			LOGGER.error("Cannot convert the result set to the CustomerAddressDBModel bean", e);
 
 			System.out.println(e.getMessage());
 		}
-		
+
 		return customerAddressDBModel;
 	}
 }

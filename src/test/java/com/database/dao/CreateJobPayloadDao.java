@@ -12,11 +12,12 @@ import org.apache.logging.log4j.Logger;
 import com.database.DatabaseManager;
 import com.dataproviders.api.bean.CreateJobBean;
 
+import io.qameta.allure.Step;
+
 public class CreateJobPayloadDao {
 	private static final Logger LOGGER = LogManager.getLogger(CreateJobPayloadDao.class);
 
-	private static final String SQL_QUERY =
-			"""
+	private static final String SQL_QUERY = """
 			select
 			mst_service_location_id,
 			mst_platform_id,
@@ -61,16 +62,14 @@ public class CreateJobPayloadDao {
 			limit 5;
 
 								""";
-	
-	
-	
+
+	@Step("Retriving the CreateJob Payload Data from Database")
 	public static List<CreateJobBean> getCreateJobPayloadData() {
-		Connection conn=null;
+		Connection conn = null;
 		Statement statement;
 		ResultSet resultSet = null;
 		List<CreateJobBean> beanList = new ArrayList<CreateJobBean>();
-		
-		
+
 		try {
 			LOGGER.info("Getting the connection from the Database Manager");
 			conn = DatabaseManager.getConnection();
@@ -78,7 +77,7 @@ public class CreateJobPayloadDao {
 			resultSet = statement.executeQuery(SQL_QUERY);
 			LOGGER.info("Executing the SQL Query {}", SQL_QUERY);
 
-			while(resultSet.next()) {
+			while (resultSet.next()) {
 				CreateJobBean bean = new CreateJobBean();
 				bean.setMst_service_location_id(resultSet.getString("mst_service_location_id"));
 				bean.setMst_platform_id(resultSet.getString("mst_platform_id"));
@@ -109,12 +108,12 @@ public class CreateJobPayloadDao {
 				bean.setCustomer_product__product_id("1");
 				beanList.add(bean);
 			}
-		}catch(Exception e) {
+		} catch (Exception e) {
 			LOGGER.error("Cannot convert the result set to the bean", e);
 
 			e.printStackTrace();
 		}
-		for(CreateJobBean bean : beanList) {
+		for (CreateJobBean bean : beanList) {
 			System.out.println(bean);
 		}
 		return beanList;
