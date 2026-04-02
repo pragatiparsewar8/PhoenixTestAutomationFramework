@@ -2,7 +2,6 @@ package com.api.tests;
 
 import static com.api.constants.Role.FD;
 import static com.api.utils.SpecUtil.requestSpec;
-import static com.api.utils.SpecUtil.requestSpecWithAuth;
 import static com.api.utils.SpecUtil.responseSpec_OK;
 import static com.api.utils.SpecUtil.responseSpec_TEXT;
 import static io.restassured.RestAssured.given;
@@ -18,7 +17,16 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import com.api.services.MasterService;
+
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
 @Listeners(com.listeners.APITestListeners.class)
+@Epic("Job Management")
+@Feature("Master API")
 public class MasterAPITest {
 	private MasterService masterService;
 
@@ -26,6 +34,10 @@ public class MasterAPITest {
 	public void setup() {
 		masterService = new MasterService();
 	}
+	
+	@Story("Master API should bring OEM details, Problem type,Warranty Status")
+	@Description("Verifying if master api is giving correct response")
+	@Severity(SeverityLevel.BLOCKER)
 	@Test(description="Verify if Master api is working correctly",groups= {"api","smoke","regression"})
 	public void masterAPITest() {
 		masterService.master(FD)
