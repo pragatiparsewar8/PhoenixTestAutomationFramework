@@ -11,29 +11,32 @@ import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.qameta.allure.Step;
+
 public class JsonReaderUtil {
-	
+
 	private static final Logger LOGGER = LogManager.getLogger(JsonReaderUtil.class);
-	public static <T> Iterator<T> loadJson(String filename,Class<T[]> clazz)  {
+
+	@Step("Loading test data from the json file")
+	public static <T> Iterator<T> loadJson(String filename, Class<T[]> clazz) {
 		LOGGER.info("Reading the JSON from the file {}", filename);
 		InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream(filename);
 
 		ObjectMapper objectMapper = new ObjectMapper();
 
-		
-		
 		T[] classArray;
-		List<T> list = null;;
+		List<T> list = null;
+		;
 		try {
 			LOGGER.info("Converting the JSON Data to the bean class {}", clazz);
 			classArray = objectMapper.readValue(input, clazz);
 			list = Arrays.asList(classArray);
 		} catch (IOException e) {
-			LOGGER.error("Cannot read the json from the file {}", filename,e);
+			LOGGER.error("Cannot read the json from the file {}", filename, e);
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		 return list.iterator();
+		return list.iterator();
 
 	}
 }

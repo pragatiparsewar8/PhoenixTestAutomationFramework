@@ -12,36 +12,31 @@ import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 
+import io.qameta.allure.Step;
+
 public class CSVReaderUtil {
 	private static final Logger LOGGER = LogManager.getLogger(CSVReaderUtil.class);
 
-	
 	private CSVReaderUtil() {
-		
+
 	}
-	
-	public static <T> Iterator<T> loadCSV(String pathOfCSVFile,Class<T> bean) {
+
+	@Step("Loading test data from the csv file")
+	public static <T> Iterator<T> loadCSV(String pathOfCSVFile, Class<T> bean) {
 		LOGGER.info("Loading the CSV file from the path {}", pathOfCSVFile);
-		
-		
+
 		InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream(pathOfCSVFile);
-		
+
 		InputStreamReader isr = new InputStreamReader(input);
 		CSVReader csvReader = new CSVReader(isr);
 		LOGGER.info("Converting the CSV to the Bean Class {}", bean);
-		
-		CsvToBean<T> csvToBean = new CsvToBeanBuilder(csvReader)
-				.withType(bean)
-				.withIgnoreEmptyLine(true)
-				.build();
-		
-		
-		List<T> list = csvToBean.parse();
-		
-		
-		return list.iterator();
-		
-	}
 
+		CsvToBean<T> csvToBean = new CsvToBeanBuilder(csvReader).withType(bean).withIgnoreEmptyLine(true).build();
+
+		List<T> list = csvToBean.parse();
+
+		return list.iterator();
+
+	}
 
 }

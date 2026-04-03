@@ -11,6 +11,8 @@ import org.apache.logging.log4j.Logger;
 import com.database.DatabaseManager;
 import com.database.model.MapJobProblemModel;
 
+import io.qameta.allure.Step;
+
 public class MapJobProblemDao {
 	private static final Logger LOGGER = LogManager.getLogger(MapJobProblemDao.class);
 
@@ -22,8 +24,10 @@ public class MapJobProblemDao {
 
 	}
 
+	@Step("Retriving the Problem details Information from DB for the specific job head id")
+
 	public static MapJobProblemModel getProblemDetails(int tr_job_head_id) {
-		MapJobProblemModel mapJobProblemModel =null;
+		MapJobProblemModel mapJobProblemModel = null;
 		try {
 			LOGGER.info("Getting the connection from the Database Manager");
 
@@ -35,9 +39,8 @@ public class MapJobProblemDao {
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
-				 mapJobProblemModel = new MapJobProblemModel(rs.getInt("id"),
-							rs.getInt("tr_job_head_id"),
-							rs.getInt("mst_problem_id"), rs.getString("remark"));
+				mapJobProblemModel = new MapJobProblemModel(rs.getInt("id"), rs.getInt("tr_job_head_id"),
+						rs.getInt("mst_problem_id"), rs.getString("remark"));
 			}
 		} catch (SQLException e) {
 			LOGGER.error("Cannot Convert the ResultSet to the  MapJobProblemModel bean", e);

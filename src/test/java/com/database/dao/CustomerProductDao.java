@@ -11,42 +11,44 @@ import org.apache.logging.log4j.Logger;
 import com.database.DatabaseManager;
 import com.database.model.CustomerProductDBModel;
 
+import io.qameta.allure.Step;
+
 public class CustomerProductDao {
 	private static final Logger LOGGER = LogManager.getLogger(CustomerProductDao.class);
 
-	private static final String PRODUCT_QUERY="""
+	private static final String PRODUCT_QUERY = """
 			SELECT * from tr_customer_product
 			where id =?;
 			""";
-	
+
 	private CustomerProductDao() {
-		
+
 	}
-	
-	
+
+	@Step("Retriving the Customer product Information from DB for the specific customer product id")
 	public static CustomerProductDBModel getProductInfoFromDB(int tr_customer_product_id) {
 		CustomerProductDBModel customerProductDBModel = null;
 		try {
 			LOGGER.info("Getting the connection from the Database Manager");
 
-		Connection conn = DatabaseManager.getConnection();
-		PreparedStatement ps = conn.prepareStatement(PRODUCT_QUERY);
-		ps.setInt(1, tr_customer_product_id);
-		LOGGER.info("Executing the SQL Query", PRODUCT_QUERY);
+			Connection conn = DatabaseManager.getConnection();
+			PreparedStatement ps = conn.prepareStatement(PRODUCT_QUERY);
+			ps.setInt(1, tr_customer_product_id);
+			LOGGER.info("Executing the SQL Query", PRODUCT_QUERY);
 
-		ResultSet rs = ps.executeQuery();
-		
-		while(rs.next()) {
-			 customerProductDBModel = new CustomerProductDBModel(rs.getInt("id"), rs.getInt("tr_customer_id"),
-					rs.getInt("mst_model_id"), rs.getString("dop"), rs.getString("popurl"),
-					rs.getString("imei2"), rs.getString("imei1"), rs.getString("serial_number"));
-		}
-		}catch(SQLException e) {
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				customerProductDBModel = new CustomerProductDBModel(rs.getInt("id"), rs.getInt("tr_customer_id"),
+						rs.getInt("mst_model_id"), rs.getString("dop"), rs.getString("popurl"), rs.getString("imei2"),
+						rs.getString("imei1"), rs.getString("serial_number"));
+			}
+		} catch (SQLException e) {
 			LOGGER.error("Cannot Convert the ResultSet to the  CustomerProductDBModel bean", e);
 
-			System.err.print(e.getMessage());	
+			System.err.print(e.getMessage());
 		}
-		
+
 		return customerProductDBModel;
 	}
 }
