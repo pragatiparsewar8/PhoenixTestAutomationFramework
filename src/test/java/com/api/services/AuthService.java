@@ -1,29 +1,14 @@
 package com.api.services;
 
-import static io.restassured.RestAssured.given;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.api.utils.SpecUtil;
-
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 
-public class AuthService {
-	
+public class AuthService extends AbstractService {
+
 	private static final String LOGIN_ENDPOINT = "login";
-	private static final Logger LOGGER = LogManager.getLogger(AuthService.class);
-	
+
 	@Step("Perform login request with the userCredentials")
 	public Response login(Object userCredentials) {
-//		
-		LOGGER.info("Making login request for the payload {}",userCredentials);
-		Response response = given()
-		.spec(SpecUtil
-		.requestSpec(userCredentials))
-		.when().post(LOGIN_ENDPOINT);
-		
-		return response;
+		return postWithoutAuth(LOGIN_ENDPOINT, userCredentials);
 	}
 }
