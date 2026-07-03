@@ -14,11 +14,9 @@ import static org.hamcrest.Matchers.notNullValue;
 import java.io.IOException;
 
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import com.api.constants.Role;
-import com.api.services.DashboardService;
 
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
@@ -26,31 +24,18 @@ import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
-@Listeners(com.listeners.APITestListeners.class)
+
 @Epic("Job Management")
 @Feature("Job Count")
-public class CountAPITest {
+public class CountAPITest extends BaseTest {
 
-	private	DashboardService dashboardService ;
-
-	
-	@BeforeMethod(description = "Initializing the Dashboard service")
-	public void setUp() {
-		dashboardService = new DashboardService();
-	}
-	
-	
 	@Story("Job Count Data is shown correctly")
-	@Description( "Verifying if count api is giving correct response")
+	@Description("Verifying if count api is giving correct response")
 	@Severity(SeverityLevel.CRITICAL)
-	@Test(description="Verify if count api is working correctly",groups= {"api","smoke","regression"})
+	@Test(description = "Verify if count api is working correctly", groups = { "api", "smoke", "regression" })
 	public void verifyCountAPIResponse() {
-		
-		
-		dashboardService.count(Role.FD)
-				.then()
-				.spec(responseSpec_OK())
-				.body("message", equalTo("Success"))
+
+		dashboardService.count(Role.FD).then().spec(responseSpec_OK()).body("message", equalTo("Success"))
 				.body("data", notNullValue()).body("data.size()", equalTo(3))
 				.body("data.count", everyItem(greaterThanOrEqualTo(0)))
 				.body("data.label", everyItem(not(blankOrNullString())))
@@ -59,10 +44,9 @@ public class CountAPITest {
 				.body(matchesJsonSchemaInClasspath("response-schema/CountAPIResponseSchema-FD.json"));
 	}
 
-	@Test(description="Verify if count api is giving correct status for invalid token",groups= {"api","smoke","regression","negative"})
+	@Test(description = "Verify if count api is giving correct status for invalid token", groups = { "api", "smoke",
+			"regression", "negative" })
 	public void countApiTest_MissingAuthToken() throws IOException {
-		dashboardService.countWithNoAuth()
-		.then()
-		.spec(responseSpec_TEXT(401));
+		dashboardService.countWithNoAuth().then().spec(responseSpec_TEXT(401));
 	}
 }

@@ -1,25 +1,16 @@
 package com.api.services;
 
-import static com.api.utils.SpecUtil.requestSpecWithAuth;
-import static io.restassured.RestAssured.given;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.api.constants.Role;
 
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 
-public class MasterService {
+public class MasterService extends AbstractService {
 
 	private static final String MASTER_ENDPOINT = "/master";
-	private static final Logger LOGGER = LogManager.getLogger(MasterService.class);
 
 	@Step("Making Master API Request")
 	public Response master(Role role) {
-		LOGGER.info("Making  request to {} for the role {}",MASTER_ENDPOINT,role );
-
-		return given().spec(requestSpecWithAuth(role)).when().post(MASTER_ENDPOINT);
+		return post(role, MASTER_ENDPOINT);
 	}
 }

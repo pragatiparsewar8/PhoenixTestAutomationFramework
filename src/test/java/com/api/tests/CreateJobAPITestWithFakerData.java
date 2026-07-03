@@ -1,19 +1,15 @@
 package com.api.tests;
 
-import static com.api.utils.SpecUtil.requestSpecWithAuth;
 import static com.api.utils.SpecUtil.responseSpec_OK;
-import static io.restassured.RestAssured.given;
 
 import org.hamcrest.Matchers;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import com.api.constants.Role;
 import com.api.request.model.CreateJobPayload;
 import com.api.request.model.Customer;
-import com.api.services.JobService;
 import com.api.utils.FakerDataGenerator;
 import com.database.dao.CustomerAddressDao;
 import com.database.dao.CustomerDao;
@@ -21,26 +17,22 @@ import com.database.model.CustomerAddressDBModel;
 import com.database.model.CustomerDBModel;
 
 import io.restassured.module.jsv.JsonSchemaValidator;
-@Listeners(com.listeners.APITestListeners.class)
-public class CreateJobAPITestWithFakerData {
+
+public class CreateJobAPITestWithFakerData extends BaseTest {
 
 	private CreateJobPayload createJobPayload;
-	private JobService jobService;
 	public static final String COUNTRY = "INDIA";
 
 	@BeforeMethod(description = "Creating payload for creat job api")
 	public void setUp() {
-
 		createJobPayload = FakerDataGenerator.generateFakeCreateJobData();
-		 jobService = new JobService();
 	}
 
 	@Test(description = "Verify if create job api is able to create Inwarranty job", groups = { "api", "smoke",
 			"regression" })
 	public void createJobAPITest() {
 
-		int customerId = jobService.createJob(Role.FD, createJobPayload).then()
-				.spec(responseSpec_OK())
+		int customerId = jobService.createJob(Role.FD, createJobPayload).then().spec(responseSpec_OK())
 				.body(JsonSchemaValidator
 						.matchesJsonSchemaInClasspath("response-schema/CreateJobAPIResponseSchema.json"))
 				.body("message", Matchers.equalTo("Job created successfully. "))
@@ -62,7 +54,8 @@ public class CreateJobAPITestWithFakerData {
 		CustomerAddressDBModel customerAddressFromDB = CustomerAddressDao.getCustomerAddress(customerAddressId);
 		Assert.assertEquals(customerAddressFromDB.getFlat_number(), createJobPayload.customer_address().flat_number());
 
-		Assert.assertEquals(customerAddressFromDB.getApartment_name(), createJobPayload.customer_address().apartment_name());
+		Assert.assertEquals(customerAddressFromDB.getApartment_name(),
+				createJobPayload.customer_address().apartment_name());
 		Assert.assertEquals(customerAddressFromDB.getArea(), createJobPayload.customer_address().area());
 		Assert.assertEquals(customerAddressFromDB.getLandmark(), createJobPayload.customer_address().landmark());
 		Assert.assertEquals(customerAddressFromDB.getState(), createJobPayload.customer_address().state());

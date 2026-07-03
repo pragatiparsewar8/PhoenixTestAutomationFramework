@@ -1,9 +1,7 @@
 package com.api.tests;
 
 import static com.api.utils.DateTimeUtil.getTimeWithDaysAgo;
-import static com.api.utils.SpecUtil.requestSpecWithAuth;
 import static com.api.utils.SpecUtil.responseSpec_OK;
-import static io.restassured.RestAssured.given;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +9,6 @@ import java.util.List;
 import org.hamcrest.Matchers;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import com.api.constants.Model;
@@ -40,50 +37,49 @@ import com.database.model.MapJobProblemModel;
 
 import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.response.Response;
-@Listeners(com.listeners.APITestListeners.class)
-public class CreateJobAPITestWithDBValidationTest {
-	
+
+public class CreateJobAPITestWithDBValidationTest extends BaseTest {
+
 	private CreateJobPayload createJobPayload;
 	private Customer customer;
 	private CustomerAddress customerAddress;
 	private CustomerProduct customerProduct;
-	@BeforeMethod(description="Creating payload for creat job api")
+
+	@BeforeMethod(description = "Creating payload for creat job api")
 	public void setUp() {
-		 customer = new Customer("Pragati", "parsewar", "9420425968", "", "pragati@gmail.com", "");
-		 customerAddress = new CustomerAddress("D404", "Vsanat Galaxy", "Bangur bangur", "inorvit", "Mumbai","413517","India", "Maharashtra");
-		 customerProduct = new CustomerProduct(getTimeWithDaysAgo(10), "150887367343284", "150887367343284", "150887367343284", getTimeWithDaysAgo(10), Product.NEXUS_2.getCode(), Model.NEXUS_2_BLUE.getCode());
-		Problems problem = new Problems(Problem.POOR_BATTERY_LIFE.getCode(),"BatteryIssue");
+		customer = new Customer("Pragati", "parsewar", "9420425968", "", "pragati@gmail.com", "");
+		customerAddress = new CustomerAddress("D404", "Vsanat Galaxy", "Bangur bangur", "inorvit", "Mumbai", "413517",
+				"India", "Maharashtra");
+		customerProduct = new CustomerProduct(getTimeWithDaysAgo(10), "150887367343284", "150887367343284",
+				"150887367343284", getTimeWithDaysAgo(10), Product.NEXUS_2.getCode(), Model.NEXUS_2_BLUE.getCode());
+		Problems problem = new Problems(Problem.POOR_BATTERY_LIFE.getCode(), "BatteryIssue");
 		List<Problems> problemsList = new ArrayList<Problems>();
 		problemsList.add(problem);
-		
-		 createJobPayload = new CreateJobPayload(Service_Location.SERVICE_LOCATION_A.getCode(), Platform.FRONT_DESK.getCode(), Warranty_Status.IN_WARRANTY.getCode(), OEM.GOOGLE.getCode(), customer, customerAddress, customerProduct, problemsList);
-		
+
+		createJobPayload = new CreateJobPayload(Service_Location.SERVICE_LOCATION_A.getCode(),
+				Platform.FRONT_DESK.getCode(), Warranty_Status.IN_WARRANTY.getCode(), OEM.GOOGLE.getCode(), customer,
+				customerAddress, customerProduct, problemsList);
+
 	}
 
-	@Test(description="Verify if create job api is able to create Inwarranty job",groups= {"api","smoke","regression"})
+	@Test(description = "Verify if create job api is able to create Inwarranty job", groups = { "api", "smoke",
+			"regression" })
 	public void createJobAPITest() {
-		
-		
-		Response response = given()
-		.spec(requestSpecWithAuth(Role.FD, createJobPayload))
-		.when()
-		.post("/job/create")
-		.then()
-		.spec(responseSpec_OK())
-		.body(JsonSchemaValidator.matchesJsonSchemaInClasspath("response-schema/CreateJobAPIResponseSchema.json"))
-		.body("message", Matchers.equalTo("Job created successfully. "))
-		.body("data.mst_service_location_id",Matchers.equalTo(1))
-		.body("data.job_number",Matchers.startsWith("JOB_"))
-		.extract().response();
-		
-		int customerId =  response.then().extract().body().jsonPath().getInt("data.tr_customer_id");
+
+		Response response = jobService.createJob(Role.FD, createJobPayload).then().spec(responseSpec_OK())
+				.body(JsonSchemaValidator.matchesJsonSchemaInClasspath("response-schema/CreateJobAPIResponseSchema.json"))
+				.body("message", Matchers.equalTo("Job created successfully. "))
+				.body("data.mst_service_location_id", Matchers.equalTo(1))
+				.body("data.job_number", Matchers.startsWith("JOB_")).extract().response();
+
+		int customerId = response.then().extract().body().jsonPath().getInt("data.tr_customer_id");
 		System.out.println(customerId);
-		
-		int customerProductId =  response.then().extract().body().jsonPath().getInt("data.tr_customer_product_id");
+
+		int customerProductId = response.then().extract().body().jsonPath().getInt("data.tr_customer_product_id");
 		System.out.println(customerProductId);
-		
+
 		CustomerDBModel customerDataFromDB = CustomerDao.getCustomerInfo(customerId);
-		
+
 		Assert.assertEquals(customer.first_name(), customerDataFromDB.getFirst_name());
 		Assert.assertEquals(customer.last_name(), customerDataFromDB.getLast_name());
 		Assert.assertEquals(customer.mobile_number(), customerDataFromDB.getMobile_number());
@@ -91,9 +87,9 @@ public class CreateJobAPITestWithDBValidationTest {
 		Assert.assertEquals(customer.email_id_alt(), customerDataFromDB.getEmail_id_alt());
 		Assert.assertEquals(customer.mobile_number_alt(), customerDataFromDB.getMobile_number_alt());
 		System.out.println("----------------------------------");
-		
+
 		int customerAddressId = customerDataFromDB.getTr_customer_address_id();
-		
+
 		CustomerAddressDBModel customerAddressFromDB = CustomerAddressDao.getCustomerAddress(customerAddressId);
 		Assert.assertEquals(customerAddressFromDB.getFlat_number(), customerAddress.flat_number());
 
@@ -105,12 +101,11 @@ public class CreateJobAPITestWithDBValidationTest {
 		Assert.assertEquals(customerAddressFromDB.getCountry(), customerAddress.country());
 		Assert.assertEquals(customerAddressFromDB.getPincode(), customerAddress.pincode());
 
-		JobHeadModel jobHeadDataFromDB=JobHeadDao.getDataFromJobHead(customerId);
-		Assert.assertEquals(jobHeadDataFromDB.getMst_oem_id(),createJobPayload.mst_oem_id());
-		Assert.assertEquals(jobHeadDataFromDB.getMst_service_location_id(),createJobPayload.mst_service_location_id());
-		Assert.assertEquals(jobHeadDataFromDB.getMst_warrenty_status_id(),createJobPayload.mst_warrenty_status_id());
-		Assert.assertEquals(jobHeadDataFromDB.getMst_platform_id(),createJobPayload.mst_platform_id());
-
+		JobHeadModel jobHeadDataFromDB = JobHeadDao.getDataFromJobHead(customerId);
+		Assert.assertEquals(jobHeadDataFromDB.getMst_oem_id(), createJobPayload.mst_oem_id());
+		Assert.assertEquals(jobHeadDataFromDB.getMst_service_location_id(), createJobPayload.mst_service_location_id());
+		Assert.assertEquals(jobHeadDataFromDB.getMst_warrenty_status_id(), createJobPayload.mst_warrenty_status_id());
+		Assert.assertEquals(jobHeadDataFromDB.getMst_platform_id(), createJobPayload.mst_platform_id());
 
 		CustomerProductDBModel customerProductDBData = CustomerProductDao.getProductInfoFromDB(customerProductId);
 		Assert.assertEquals(customerProductDBData.getImei1(), customerProduct.imei1());
@@ -119,13 +114,12 @@ public class CreateJobAPITestWithDBValidationTest {
 		Assert.assertEquals(customerProductDBData.getDop(), customerProduct.dop());
 		Assert.assertEquals(customerProductDBData.getPopurl(), customerProduct.popurl());
 		Assert.assertEquals(customerProductDBData.getMst_model_id(), customerProduct.mst_model_id());
-		
+
 		int tr_job_head_id = response.then().extract().body().jsonPath().getInt("data.id");
 		MapJobProblemModel jobDataFromDB = MapJobProblemDao.getProblemDetails(tr_job_head_id);
-		
-		Assert.assertEquals(jobDataFromDB.getMst_problem_id(),createJobPayload.problems().get(0).id() );
-		Assert.assertEquals(jobDataFromDB.getRemark(),createJobPayload.problems().get(0).remark() );
-		
-		
+
+		Assert.assertEquals(jobDataFromDB.getMst_problem_id(), createJobPayload.problems().get(0).id());
+		Assert.assertEquals(jobDataFromDB.getRemark(), createJobPayload.problems().get(0).remark());
+
 	}
 }
